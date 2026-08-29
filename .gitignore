@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+controlplane.db
+*.db-shm
+*.db-wal
+.env
+

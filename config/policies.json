@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "active_version": "2026.08.1",
+  "profiles": {
+    "support_bot": {
+      "owner": "Customer Experience",
+      "risk_appetite": "moderate",
+      "latency_budget_ms": 450,
+      "permitted_actions": ["answer", "lookup_order"],
+      "checks": ["injection", "pii", "grounding", "disagreement", "cascade"],
+      "weights": {"injection": 0.7, "pii": 0.8, "grounding": 0.7, "disagreement": 0.5, "cascade": 0.5},
+      "thresholds": {"warn_or_edit": 25, "hold_for_human": 67, "block": 90},
+      "disagreement_samples": {"R0": 2, "R1": 2, "R2": 2, "R3": 5},
+      "uncertainty_default": "warn_or_edit",
+      "retention_days": 30
+    },
+    "internal_copilot": {
+      "owner": "Enterprise Knowledge",
+      "risk_appetite": "low",
+      "latency_budget_ms": 850,
+      "permitted_actions": ["answer", "draft_email", "send_email"],
+      "checks": ["injection", "pii", "grounding", "disagreement", "cascade"],
+      "weights": {"injection": 0.8, "pii": 0.9, "grounding": 0.9, "disagreement": 0.7, "cascade": 0.7},
+      "thresholds": {"warn_or_edit": 20, "hold_for_human": 52, "block": 85},
+      "disagreement_samples": {"R0": 2, "R1": 2, "R2": 2, "R3": 5},
+      "uncertainty_default": "warn_or_edit",
+      "retention_days": 60
+    },
+    "refund_agent": {
+      "owner": "Finance Operations",
+      "risk_appetite": "minimal",
+      "latency_budget_ms": 1500,
+      "permitted_actions": ["answer", "lookup_order", "draft_email", "issue_refund"],
+      "checks": ["injection", "pii", "grounding", "numeric", "disagreement", "cascade"],
+      "weights": {"injection": 1.0, "pii": 0.9, "grounding": 1.0, "numeric": 1.0, "disagreement": 0.9, "cascade": 1.0},
+      "thresholds": {"warn_or_edit": 15, "hold_for_human": 38, "block": 75},
+      "disagreement_samples": {"R0": 0, "R1": 0, "R2": 2, "R3": 5},
+      "uncertainty_default": "hold_for_human",
+      "retention_days": 90
+    }
+  },
+  "region_overlays": {
+    "IN": {
+      "label": "India / DPDP-oriented demo profile",
+      "pii_categories": ["email", "phone", "payment_card", "aadhaar_like"],
+      "consent_required": false,
+      "retention_cap_days": 90
+    },
+    "EU": {
+      "label": "EU / GDPR-oriented demo profile",
+      "pii_categories": ["email", "phone", "payment_card", "government_id", "ip_address"],
+      "consent_required": true,
+      "retention_cap_days": 30
+    }
+  }
+}

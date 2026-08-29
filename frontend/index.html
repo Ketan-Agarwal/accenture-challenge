@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ControlPlane.ai — Runtime Governance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#">
+        <span class="brand-mark">CP</span>
+        <span>ControlPlane<span class="brand-dot">.ai</span></span>
+      </a>
+      <div class="runtime"><span class="pulse"></span> deterministic demo <span id="api-status">connecting</span></div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Evidence-aware runtime governance</p>
+          <h1>Trust the decision,<br><span>not just the response.</span></h1>
+          <p class="hero-copy">Each AI use case gets its own evidence requirements, risk budget and intervention policy—before output becomes binding.</p>
+        </div>
+        <div class="flow-card" aria-label="Runtime pipeline">
+          <div class="flow-step active"><b>01</b><span>Route</span><small>profile + action</small></div>
+          <div class="flow-line"></div>
+          <div class="flow-step"><b>02</b><span>Check</span><small>parallel evidence</small></div>
+          <div class="flow-line"></div>
+          <div class="flow-step"><b>03</b><span>Decide</span><small>allow → block</small></div>
+          <div class="flow-line"></div>
+          <div class="flow-step"><b>04</b><span>Prove</span><small>versioned audit</small></div>
+        </div>
+      </section>
+
+      <section class="workspace-grid">
+        <aside class="scenario-panel panel">
+          <div class="panel-heading">
+            <div><p class="kicker">Demo runbook</p><h2>Scenarios</h2></div>
+            <span class="count" id="scenario-count">0</span>
+          </div>
+          <div id="scenario-list" class="scenario-list" aria-live="polite"></div>
+        </aside>
+
+        <section class="decision-panel panel">
+          <div class="panel-heading">
+            <div><p class="kicker">Live middleware</p><h2>Decision trace</h2></div>
+            <button class="primary" id="run-button" disabled>Run scenario <span>→</span></button>
+          </div>
+          <div id="empty-state" class="empty-state">
+            <div class="radar"><i></i><i></i><i></i><span></span></div>
+            <h3>Select a scenario</h3>
+            <p>Run it through the actual policy router, evidence checks, decision engine and audit store.</p>
+          </div>
+          <div id="result-view" class="result-view hidden">
+            <div class="result-summary">
+              <div>
+                <p class="kicker">Final intervention</p>
+                <div id="decision-badge" class="decision-badge"></div>
+              </div>
+              <div class="risk-meter-wrap">
+                <div class="risk-label"><span>Evidence-weighted risk</span><strong id="risk-score">0</strong></div>
+                <div class="risk-meter"><span id="risk-fill"></span></div>
+              </div>
+            </div>
+            <div class="meta-row" id="meta-row"></div>
+            <div class="response-box">
+              <p class="kicker">Response released downstream</p>
+              <p id="safe-response"></p>
+            </div>
+            <div class="signals-heading"><h3>Evidence bundle</h3><span id="signal-count"></span></div>
+            <div id="signals" class="signals"></div>
+            <div class="review-bar" id="review-bar">
+              <div><p class="kicker">Human feedback</p><span>Was the underlying case actually risky?</span></div>
+              <div><button class="review-button safe" data-label="safe">Mark safe</button><button class="review-button unsafe" data-label="unsafe">Mark unsafe</button></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="metrics-section">
+        <div class="section-heading">
+          <div><p class="eyebrow">No opaque trust score</p><h2>Operational scorecard</h2></div>
+          <button class="secondary" id="suite-button">Run 12-case evaluation</button>
+        </div>
+        <div class="metric-grid">
+          <article class="metric-card"><p>Interactions</p><strong id="metric-volume">0</strong><small>audited decisions</small></article>
+          <article class="metric-card"><p>Precision</p><strong id="metric-precision">—</strong><small>flagged cases confirmed risky</small></article>
+          <article class="metric-card"><p>Recall</p><strong id="metric-recall">—</strong><small>known risky cases detected</small></article>
+          <article class="metric-card"><p>False-negative rate</p><strong id="metric-fnr">—</strong><small>missed known-risk cases</small></article>
+          <article class="metric-card"><p>p95 latency</p><strong id="metric-p95">—</strong><small>middleware overhead</small></article>
+        </div>
+        <div class="matrix-card">
+          <div><p class="kicker">Threshold honesty</p><h3>Confusion matrix</h3><p>Warn/edit, hold and block count as interventions. Seeded labels are replaced by human review when available.</p></div>
+          <div class="matrix">
+            <div class="matrix-label"></div><div class="matrix-label">Actually risky</div><div class="matrix-label">Actually safe</div>
+            <div class="matrix-label">Intervened</div><div class="matrix-cell good"><b id="matrix-tp">0</b><span>TP</span></div><div class="matrix-cell warn"><b id="matrix-fp">0</b><span>FP</span></div>
+            <div class="matrix-label">Allowed</div><div class="matrix-cell danger"><b id="matrix-fn">0</b><span>FN</span></div><div class="matrix-cell neutral"><b id="matrix-tn">0</b><span>TN</span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+[
+  {
+    "session_id": "cascade-demo-01",
+    "description": "A low-risk lookup progresses into an external communication and then a financial action.",
+    "steps": [
+      {"action": "lookup_order", "risk": "R0"},
+      {"action": "draft_email", "risk": "R1"},
+      {"action": "issue_refund", "risk": "R3"}
+    ]
+  }
+]
+

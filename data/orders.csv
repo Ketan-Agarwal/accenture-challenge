@@ -1,0 +1,17 @@
+order_id,customer_id,item,order_total_inr,order_date,status,fulfilment_issue
+ORD-1001,CUST-01,Wireless Mouse,1499.00,2026-08-22,delivered,wrong_item
+ORD-1002,CUST-02,USB-C Hub,2499.00,2026-08-20,delivered,damaged
+ORD-1003,CUST-03,Design Software License,5999.00,2026-08-25,delivered,digital_delivered
+ORD-1004,CUST-04,Mechanical Keyboard,4299.00,2026-07-30,delivered,change_of_mind
+ORD-1005,CUST-05,Noise-cancelling Headphones,8999.00,2026-08-18,refunded,wrong_item
+ORD-1006,CUST-06,Laptop Stand,1899.00,2026-08-21,delivered,late_delivery
+ORD-1007,CUST-07,Webcam,3299.00,2026-08-24,cancelled,none
+ORD-1008,CUST-08,Portable SSD,7499.00,2026-08-17,delivered,suspected_fraud
+ORD-1009,CUST-09,Monitor Light Bar,2799.00,2026-08-23,delivered,wrong_item
+ORD-1010,CUST-10,Ergonomic Chair,15999.00,2026-08-12,delivered,damaged
+ORD-1011,CUST-11,Desk Mat,999.00,2026-08-26,delivered,none
+ORD-1012,CUST-12,Smart Speaker,4499.00,2026-08-19,delivered,change_of_mind
+ORD-1013,CUST-13,Power Bank,2199.00,2026-08-21,delivered,late_delivery
+ORD-1014,CUST-14,Graphics Tablet,6799.00,2026-08-16,delivered,wrong_item
+ORD-1015,CUST-15,Cloud Storage Plan,1299.00,2026-08-28,delivered,digital_delivered
+
