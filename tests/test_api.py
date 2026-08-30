@@ -21,6 +21,12 @@ def test_health_and_scenarios():
     assert len(scenarios) == 8
 
 
+def test_backend_root_redirects_to_api_documentation():
+    response = request("GET", "/")
+    assert response.status_code == 307
+    assert response.headers["location"] == "/docs"
+
+
 def test_scenario_run_returns_auditable_decision():
     response = request("POST", "/api/scenarios/refund-mismatch/run")
     assert response.status_code == 200

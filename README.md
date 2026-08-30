@@ -54,15 +54,44 @@ npm run dev
 
 Open <http://localhost:3000>. The dashboard proxies `/api/*` to the FastAPI backend at `http://127.0.0.1:8000` (override with `API_URL`).
 
-### Legacy static dashboard
-
-The original HTML mockup is still served by FastAPI at <http://127.0.0.1:8000> if you run only the backend.
-
 Run the tests:
 
 ```bash
 uv run pytest
 ```
+
+## Run with Podman or Docker
+
+The Compose stack builds two non-root production containers and persists the
+SQLite audit trail in the `audit-data` volume.
+
+```bash
+# Podman
+podman compose up --build
+
+# Docker
+docker compose up --build
+```
+
+Open the Next.js dashboard at <http://localhost:3000>. The backend API and
+interactive documentation remain available at <http://localhost:8000/docs>.
+The frontend proxies `/api/*` to the internal `backend:8000` service, so the
+browser never needs to know the container-network address.
+
+Useful Podman lifecycle commands:
+
+```bash
+podman compose ps
+podman compose logs -f
+podman compose down
+
+# Also remove the persisted synthetic audit database:
+podman compose down --volumes
+```
+
+The default container intentionally uses the dependency-light regex/Jaccard
+detectors. Optional Presidio and sentence-transformer extras are excluded to
+keep the judged demo image small, deterministic, and offline-safe.
 
 ## API
 
@@ -121,8 +150,7 @@ data/demo_scenarios.json     Eight judge-facing demo stories
 data/evaluation_scenarios.json  Separate labeled evaluation cases
 data/orders.csv              Synthetic commerce system of record
 data/policy_docs/            Synthetic governed policy corpus
-frontend/                    Legacy static dashboard (served by FastAPI)
-web/                         Next.js demo dashboard (Person C)
+web/                         Next.js demo dashboard
 tests/                       Pipeline and API regression tests
 ControlPlane_Final_Proposal_Plan.md
 ```

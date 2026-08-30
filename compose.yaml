@@ -1,0 +1,57 @@
+name: controlplane-ai
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: localhost/controlplane-backend:latest
+    environment:
+      CONTROLPLANE_DB_PATH: /app/var/controlplane.db
+      CONTROLPLANE_ENABLE_LOCAL_EMBEDDINGS: "0"
+    ports:
+      - "8000:8000"
+    volumes:
+      - audit-data:/app/var
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=2)"
+      interval: 10s
+      timeout: 3s
+      start_period: 10s
+      retries: 5
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        API_URL: http://backend:8000
+    image: localhost/controlplane-frontend:latest
+    environment:
+      API_URL: http://backend:8000
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+      interval: 10s
+      timeout: 3s
+      start_period: 10s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  audit-data:

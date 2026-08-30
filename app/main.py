@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import RedirectResponse
 
 from app.models import EvaluationRequest, EvaluationResult, ReviewRequest
 from app.pipeline import ControlPlane
-from app.policy import PolicyError, ROOT
+from app.policy import PolicyError
 
 
 app = FastAPI(
@@ -25,25 +25,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 control_plane = ControlPlane()
-WEB_ROOT = ROOT / "frontend"
-INDEX_HTML = (WEB_ROOT / "index.html").read_text(encoding="utf-8")
-STYLES_CSS = (WEB_ROOT / "styles.css").read_text(encoding="utf-8")
-APP_JS = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
 
 
 @app.get("/", include_in_schema=False)
-async def index() -> HTMLResponse:
-    return HTMLResponse(INDEX_HTML)
-
-
-@app.get("/static/styles.css", include_in_schema=False)
-async def styles() -> Response:
-    return Response(STYLES_CSS, media_type="text/css")
-
-
-@app.get("/static/app.js", include_in_schema=False)
-async def javascript() -> Response:
-    return Response(APP_JS, media_type="text/javascript")
+async def index() -> RedirectResponse:
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/api/health")

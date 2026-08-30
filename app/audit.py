@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,7 +13,9 @@ from app.policy import ROOT
 
 class AuditRepository:
     def __init__(self, path: Path | None = None):
-        self.path = path or ROOT / "controlplane.db"
+        configured_path = os.getenv("CONTROLPLANE_DB_PATH")
+        self.path = path or (Path(configured_path) if configured_path else ROOT / "controlplane.db")
+        self.path.parent.mkdir(parents=True, exist_ok=True)
         self._initialize()
 
     def _connect(self) -> sqlite3.Connection:
