@@ -185,7 +185,7 @@ class ControlPlane:
         if ctx.plan.run_grounding:
             task_specs.append((
                 "grounding",
-                lambda: grounding_check(ctx.response, self.data.policy_chunks),
+                lambda: grounding_check(ctx.response, self.data.policy_chunks, embedding_index=self.data.embedding_index),
             ))
         if ctx.plan.run_numeric:
             checked_request = ctx.request.model_copy(update={"proposed_response": ctx.response})

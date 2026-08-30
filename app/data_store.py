@@ -2,11 +2,15 @@ from __future__ import annotations
 
 import csv
 import json
+import logging
 import re
 from pathlib import Path
 from typing import Any
 
+from app.embeddings import EmbeddingIndex
 from app.policy import ROOT
+
+log = logging.getLogger(__name__)
 
 
 class BusinessData:
@@ -17,6 +21,8 @@ class BusinessData:
         policy_text = (self.root / "policy_docs" / "refund_policy_v1.md").read_text(encoding="utf-8")
         chunks = re.split(r"(?=^## )", policy_text, flags=re.MULTILINE)
         self.policy_chunks = [chunk.strip() for chunk in chunks if chunk.strip().startswith("##")]
+        self.embedding_index = EmbeddingIndex(self.policy_chunks)
+        log.info("BusinessData loaded: %d orders, %d policy chunks.", len(self.orders), len(self.policy_chunks))
         self.demo_scenarios = self._read_json("demo_scenarios.json")
         self.evaluation_scenarios = self._read_json("evaluation_scenarios.json")
 

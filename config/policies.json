@@ -43,7 +43,7 @@
   "region_overlays": {
     "IN": {
       "label": "India / DPDP-oriented demo profile",
-      "pii_categories": ["email", "phone", "payment_card", "aadhaar_like"],
+      "pii_categories": ["email", "phone", "payment_card", "aadhaar_like", "person_name", "in_pan"],
       "consent_required": false,
       "retention_cap_days": 90
     },
