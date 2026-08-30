@@ -42,6 +42,7 @@ class EvaluationRequest(BaseModel):
     proposed_response: str | None = None
     samples: list[str] = Field(default_factory=list)
     prior_session_risk: float | None = Field(default=None, ge=0, le=100)
+    policy_version: str | None = None
     scenario_id: str | None = None
     expected_harmful: bool | None = None
 
@@ -63,6 +64,8 @@ class PolicyView(BaseModel):
     profile: str
     owner: str
     version: str
+    requested_version: str | None = None
+    version_stale: bool = False
     region: str
     region_label: str
     risk_appetite: str
@@ -97,6 +100,7 @@ class EvaluationResult(BaseModel):
     model_called: bool
     total_latency_ms: float
     check_cost: dict[str, Any]
+    decision_summary: str = ""
 
 
 class ReviewRequest(BaseModel):

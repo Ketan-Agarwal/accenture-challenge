@@ -18,14 +18,30 @@ This Round 2 prototype uses synthetic commerce data and deterministic model resp
 
 ## Run locally
 
-Requirements: Python 3.12+ and [uv](https://docs.astral.sh/uv/).
+Requirements: Python 3.12+, [uv](https://docs.astral.sh/uv/), and Node.js 20+ for the Next.js dashboard.
+
+### Backend API
 
 ```bash
 uv sync --group dev
 uv run uvicorn app.main:app --reload
 ```
 
-Open <http://127.0.0.1:8000>. Select a scenario and run it through the real middleware path. Use **Run 12-case evaluation** to populate the scorecard from cases separate from the eight demo stories.
+API docs: <http://127.0.0.1:8000/docs>
+
+### Next.js dashboard (recommended demo UI)
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+Open <http://localhost:3000>. The dashboard proxies `/api/*` to the FastAPI backend at `http://127.0.0.1:8000` (override with `API_URL`).
+
+### Legacy static dashboard
+
+The original HTML mockup is still served by FastAPI at <http://127.0.0.1:8000> if you run only the backend.
 
 Run the tests:
 
@@ -44,6 +60,7 @@ Interactive API documentation is available at <http://127.0.0.1:8000/docs>.
 | `POST` | `/api/evaluate` | Evaluate a custom request/response pair |
 | `POST` | `/api/evaluation-suite/run` | Run the separate 12-case labeled evaluation set |
 | `GET` | `/api/policies` | Inspect resolved use-case and regional policies |
+| `GET` | `/api/policies/versions` | List active and historical policy versions |
 | `GET` | `/api/audits` | Read recent decision records |
 | `POST` | `/api/audits/{id}/review` | Apply a human safety label or decision override |
 | `GET` | `/api/metrics` | Read operational and confusion-matrix metrics |
@@ -89,7 +106,8 @@ data/demo_scenarios.json     Eight judge-facing demo stories
 data/evaluation_scenarios.json  Separate labeled evaluation cases
 data/orders.csv              Synthetic commerce system of record
 data/policy_docs/            Synthetic governed policy corpus
-frontend/                    Live dashboard
+frontend/                    Legacy static dashboard (served by FastAPI)
+web/                         Next.js demo dashboard (Person C)
 tests/                       Pipeline and API regression tests
 ControlPlane_Final_Proposal_Plan.md
 ```

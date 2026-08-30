@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, Response
 
 from app.models import EvaluationRequest, EvaluationResult, ReviewRequest
@@ -12,6 +13,16 @@ app = FastAPI(
     title="ControlPlane.ai",
     version="0.1.0",
     description="Evidence-aware runtime governance middleware for enterprise AI",
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 control_plane = ControlPlane()
 WEB_ROOT = ROOT / "frontend"
@@ -83,6 +94,11 @@ async def run_evaluation_suite() -> dict:
 @app.get("/api/policies")
 async def policies() -> list[dict]:
     return [policy.model_dump(mode="json") for policy in control_plane.policies.list_profiles()]
+
+
+@app.get("/api/policies/versions")
+async def policy_versions() -> dict:
+    return control_plane.policies.version_info()
 
 
 @app.get("/api/audits")

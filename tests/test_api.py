@@ -37,3 +37,13 @@ def test_unknown_policy_is_rejected():
         "proposed_response": "hello",
     })
     assert response.status_code == 422
+
+
+def test_policy_versions_endpoint():
+    response = request("GET", "/api/policies/versions")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["active_version"] == "2026.08.1"
+    assert "2026.07.1" in payload["superseded_versions"]
+    assert set(payload["profiles"]) == {"support_bot", "internal_copilot", "refund_agent"}
+    assert set(payload["regions"]) == {"IN", "EU"}

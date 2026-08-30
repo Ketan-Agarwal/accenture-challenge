@@ -1,6 +1,7 @@
 {
   "schema_version": "1.0",
   "active_version": "2026.08.1",
+  "version_history": ["2026.07.1"],
   "profiles": {
     "support_bot": {
       "owner": "Customer Experience",
