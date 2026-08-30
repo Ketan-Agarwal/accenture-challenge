@@ -15,6 +15,30 @@ This Round 2 prototype uses synthetic commerce data and deterministic model resp
 - Session-level cascade risk.
 - Versioned regional overlays for India- and EU-oriented demo policies.
 - Structured reason codes, an audit trail, human review, and honest false-positive/negative metrics.
+- A two-phase Action Gateway: the model proposes a refund, while a constrained
+  executor alone can authorize and commit it.
+- Short-lived HMAC capabilities bound to the action ID, order, amount, policy
+  version, expiry, and API route, with restart-safe exactly-once receipts.
+- A side-effect-free Policy Simulator that compares the same evidence across
+  multiple trust contracts without contaminating runtime audits or metrics.
+
+## Three-minute judge demo
+
+1. Open **Action Gateway**, select `ORD-1001`, and propose INR 2,499.
+   Deterministic recomputation blocks it and no
+   execution capability is minted. Blocked actions are immutable; correction
+   requires a fresh evaluation.
+2. Change it to the correct INR 1,499 and propose again. Show the evidence
+   receipt and short-lived authorization, then execute it. The commerce order
+   changes to `refunded` and the ledger retains a receipt.
+3. Replay the execute request through the API. The same receipt is returned and
+   no second refund is created.
+4. In **Policy Simulator**, run one unsupported policy claim across support,
+   copilot, and refund profiles. Compare their thresholds, checks, risk scores,
+   and interventions while the production audit count stays unchanged.
+5. Finish with the seeded evaluation suite and metrics: precision/recall,
+   false-positive and false-negative rates, latency, review overrides, and
+   model-call cost by blast radius.
 
 ## Run locally
 
@@ -93,6 +117,10 @@ The default container intentionally uses the dependency-light regex/Jaccard
 detectors. Optional Presidio and sentence-transformer extras are excluded to
 keep the judged demo image small, deterministic, and offline-safe.
 
+The Compose file includes a deterministic demo signing secret so authorizations
+survive a container restart. Override `CONTROLPLANE_ACTION_SECRET` with a secret
+manager-provided random value outside the synthetic demo.
+
 ## API
 
 Interactive API documentation is available at <http://127.0.0.1:8000/docs>.
@@ -105,6 +133,12 @@ Interactive API documentation is available at <http://127.0.0.1:8000/docs>.
 | `POST` | `/api/evaluation-suite/run` | Run the separate 12-case labeled evaluation set |
 | `GET` | `/api/policies` | Inspect resolved use-case and regional policies |
 | `GET` | `/api/policies/versions` | List active and historical policy versions |
+| `POST` | `/api/policy-simulator` | Compare one request across policy profiles without runtime side effects |
+| `GET` | `/api/commerce/orders` | Read the synthetic commerce system of record plus executed refunds |
+| `GET` | `/api/actions` | Read the capability-free governed action ledger |
+| `POST` | `/api/actions/propose` | Evaluate and persist a structured refund proposal |
+| `POST` | `/api/actions/{id}/review` | Approve/correct or reject a held action |
+| `POST` | `/api/actions/{id}/execute` | Execute an authorized action exactly once |
 | `GET` | `/api/audits` | Read recent decision records |
 | `POST` | `/api/audits/{id}/review` | Apply a human safety label or decision override |
 | `GET` | `/api/metrics` | Read operational and confusion-matrix metrics |
@@ -136,7 +170,9 @@ application
   → applicable evidence checks
   → hard constraints + weighted decision policy
   → release, redact, hold, or block
-  → SQLite audit + human feedback + metrics
+  → signed action capability (only when authorized)
+  → constrained exactly-once commerce executor
+  → SQLite audit + action receipt + human feedback + metrics
 ```
 
 Hard constraints are evaluated separately from the weighted evidence score. A numeric mismatch on an automated refund or an injection attempt attached to a privileged action cannot pass because unrelated checks were quiet.
@@ -144,7 +180,7 @@ Hard constraints are evaluated separately from the weighted evidence score. A nu
 ## Repository map
 
 ```text
-app/                         API, policy router, checks, decisions, audit and metrics
+app/                         API, policy router, checks, action gateway, simulator, audit and metrics
 config/policies.json         Versioned profiles and regional overlays
 data/demo_scenarios.json     Eight judge-facing demo stories
 data/evaluation_scenarios.json  Separate labeled evaluation cases
@@ -163,5 +199,8 @@ ControlPlane_Final_Proposal_Plan.md
 - The policy overlays demonstrate configuration mechanics and are not legal advice or production compliance mappings.
 - Metrics from small synthetic datasets illustrate measurement discipline, not statistically reliable production performance.
 - Audit data is local SQLite with synthetic inputs. Production deployment requires access control, encryption, minimization, retention enforcement, and tamper-resistant export.
+- The bundled signing secret is only for a repeatable local demo. Production
+  requires managed key rotation, authenticated reviewer identities, RBAC, and
+  an external transactional commerce adapter.
 
 See [ControlPlane_Final_Proposal_Plan.md](ControlPlane_Final_Proposal_Plan.md) for the full business, governance, metrics, and roadmap plan.

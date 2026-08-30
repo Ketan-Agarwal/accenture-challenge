@@ -16,6 +16,8 @@ import { MetricsSection } from "@/components/MetricsSection";
 import { ScenarioPanel } from "@/components/ScenarioPanel";
 import { Toast } from "@/components/Toast";
 import { TopBar } from "@/components/TopBar";
+import { ActionGateway } from "@/components/ActionGateway";
+import { PolicySimulator } from "@/components/PolicySimulator";
 
 export default function DashboardPage() {
   const [online, setOnline] = useState(false);
@@ -108,6 +110,8 @@ export default function DashboardPage() {
       <TopBar online={online} apiVersion={apiVersion} />
       <main>
         <Hero />
+        <ActionGateway onNotify={showToast} onAction={refreshMetrics} />
+        <PolicySimulator onNotify={showToast} />
         <section className="workspace-grid">
           <ScenarioPanel
             scenarios={scenarios}

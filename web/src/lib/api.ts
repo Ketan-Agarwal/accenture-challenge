@@ -1,7 +1,11 @@
 import type {
+  ActionProposal,
   AuditRecord,
+  CommerceOrder,
   EvaluationResult,
+  GovernedAction,
   Metrics,
+  PolicySimulation,
   PolicyVersions,
   PolicyView,
   Scenario,
@@ -41,5 +45,50 @@ export const api = {
         human_label: humanLabel,
         note: "Submitted from Next.js dashboard",
       }),
+    }),
+  commerceOrders: () => request<CommerceOrder[]>("/api/commerce/orders"),
+  actions: async () => {
+    const data = await request<GovernedAction[] | { actions: GovernedAction[] }>("/api/actions");
+    return Array.isArray(data) ? data : data.actions;
+  },
+  proposeAction: (payload: {
+    use_case: string;
+    region: string;
+    session_id: string;
+    order_id: string;
+    amount_inr: number;
+    reason: string;
+  }) =>
+    request<ActionProposal | GovernedAction>("/api/actions/propose", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  executeAction: (actionId: string, authorizationToken: string) =>
+    request<ActionProposal | GovernedAction>(`/api/actions/${actionId}/execute`, {
+      method: "POST",
+      body: JSON.stringify({ authorization_token: authorizationToken }),
+    }),
+  reviewAction: (
+    actionId: string,
+    payload: {
+      decision: "approve" | "reject";
+      corrected_amount_inr?: number;
+      note?: string;
+    },
+  ) =>
+    request<ActionProposal | GovernedAction>(`/api/actions/${actionId}/review`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  simulatePolicies: (payload: {
+    prompt: string;
+    proposed_response: string;
+    action: string;
+    region: string;
+    profiles?: string[];
+  }) =>
+    request<PolicySimulation>("/api/policy-simulator", {
+      method: "POST",
+      body: JSON.stringify(payload),
     }),
 };

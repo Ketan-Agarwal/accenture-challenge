@@ -9,6 +9,7 @@ services:
     environment:
       CONTROLPLANE_DB_PATH: /app/var/controlplane.db
       CONTROLPLANE_ENABLE_LOCAL_EMBEDDINGS: "0"
+      CONTROLPLANE_ACTION_SECRET: ${CONTROLPLANE_ACTION_SECRET:-controlplane-demo-action-secret-2026}
     ports:
       - "8000:8000"
     volumes:

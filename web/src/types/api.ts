@@ -115,3 +115,60 @@ export type AuditRecord = {
   latency_ms: number;
   decision_summary?: string;
 };
+
+export type CommerceOrder = {
+  order_id: string;
+  item: string;
+  order_total_inr: number;
+  status: string;
+  fulfilment_issue?: string | null;
+  refund_status?: string | null;
+  refunded_amount_inr?: number | null;
+};
+
+export type GovernedAction = {
+  action_id: string;
+  order_id: string;
+  use_case: string;
+  region: string;
+  session_id: string;
+  amount_inr: number;
+  reason: string;
+  audit_id?: string;
+  decision: Decision;
+  status: string;
+  authorization_token?: string | null;
+  risk_score?: number;
+  reason_codes?: string[];
+  signals?: EvidenceSignal[];
+  decision_summary?: string;
+  policy_version?: string;
+  token_expires_at?: string | null;
+  created_at?: string;
+  reviewed_at?: string | null;
+  executed_at?: string | null;
+  review_note?: string | null;
+};
+
+export type ActionProposal = {
+  action: GovernedAction;
+  evaluation?: EvaluationResult;
+  authorization_token?: string | null;
+};
+
+export type PolicySimulationRow = {
+  profile: string;
+  region: string;
+  decision: Decision;
+  risk_score: number;
+  reason_codes: string[];
+  decision_summary: string;
+  blast_radius?: string;
+  policy_version?: string;
+  thresholds?: Record<string, number>;
+  checks_run?: string[];
+};
+
+export type PolicySimulation = {
+  results: PolicySimulationRow[];
+};
