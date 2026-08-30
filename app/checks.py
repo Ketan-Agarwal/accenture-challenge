@@ -26,7 +26,7 @@ import math
 import re
 import time
 from collections.abc import Callable
-from datetime import date, timedelta
+from datetime import date
 
 from app.data_store import BusinessData
 from app.embeddings import EmbeddingIndex, cosine_similarity, embed, embeddings_available, pairwise_cosine_matrix
@@ -215,8 +215,11 @@ def _get_presidio():
         from presidio_analyzer import AnalyzerEngine
         _PRESIDIO_ANALYZER = AnalyzerEngine()
         log.info("Presidio AnalyzerEngine loaded successfully.")
-    except Exception:
-        log.warning("Presidio unavailable; falling back to regex PII detection.", exc_info=True)
+    except ModuleNotFoundError:
+        log.info("Presidio extra not installed; using regex PII detection.")
+        _PRESIDIO_ANALYZER = None
+    except Exception as exc:
+        log.warning("Presidio initialization failed; using regex PII detection: %s", exc)
         _PRESIDIO_ANALYZER = None
     return _PRESIDIO_ANALYZER
 
@@ -499,21 +502,19 @@ def grounding_check(response: str, chunks: list[str], *, embedding_index: Embedd
 
 # Return window for change-of-mind requests (days).
 CHANGE_OF_MIND_WINDOW_DAYS = 7
+DEMO_REFERENCE_DATE = date(2026, 8, 30)
 
 # Refund rules keyed by fulfilment_issue.  Each returns (allowed_amount | None, policy_clause).
 # None means "no automated cash refund allowed".
 def _compute_refund_eligibility(
     order: dict[str, str],
-    today: date | None = None,
+    today: date = DEMO_REFERENCE_DATE,
 ) -> tuple[float | None, str]:
-    """Return ``(allowed_amount_or_None, policy_clause_id)``."""
+    """Return eligibility relative to the versioned synthetic dataset date."""
     issue = order.get("fulfilment_issue", "none")
     status = order.get("status", "")
     total = float(order["order_total_inr"])
     order_date = date.fromisoformat(order["order_date"])
-    if today is None:
-        today = date.today()
-
     if status == "refunded":
         return None, "ALREADY_REFUNDED"
     if status == "cancelled":
@@ -581,7 +582,7 @@ def numeric_check(request: EvaluationRequest, data: BusinessData) -> EvidenceSig
     status = order["status"]
     issue = order.get("fulfilment_issue", "none")
 
-    allowed, clause = _compute_refund_eligibility(order)
+    allowed, clause = _compute_refund_eligibility(order, today=data.reference_date)
     matches = allowed is not None and math.isclose(stated, allowed, abs_tol=0.01)
 
     if matches:

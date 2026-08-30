@@ -4,6 +4,7 @@ import csv
 import json
 import logging
 import re
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +17,8 @@ log = logging.getLogger(__name__)
 class BusinessData:
     def __init__(self, root: Path | None = None):
         self.root = root or ROOT / "data"
+        metadata = self._read_json_object("dataset_metadata.json")
+        self.reference_date = date.fromisoformat(metadata["reference_date"])
         with (self.root / "orders.csv").open(encoding="utf-8", newline="") as handle:
             self.orders = {row["order_id"]: row for row in csv.DictReader(handle)}
         policy_text = (self.root / "policy_docs" / "refund_policy_v1.md").read_text(encoding="utf-8")
@@ -29,9 +32,11 @@ class BusinessData:
     def _read_json(self, name: str) -> list[dict[str, Any]]:
         return json.loads((self.root / name).read_text(encoding="utf-8"))
 
+    def _read_json_object(self, name: str) -> dict[str, Any]:
+        return json.loads((self.root / name).read_text(encoding="utf-8"))
+
     def scenario(self, scenario_id: str) -> dict[str, Any]:
         for scenario in self.demo_scenarios:
             if scenario["id"] == scenario_id:
                 return scenario
         raise KeyError(scenario_id)
-

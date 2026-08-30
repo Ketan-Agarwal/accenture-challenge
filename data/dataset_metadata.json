@@ -1,0 +1,4 @@
+{
+  "reference_date": "2026-08-30",
+  "description": "Fixed evaluation date for deterministic synthetic order and return-window calculations."
+}

@@ -9,6 +9,8 @@
   --orange: #e67530;
   --red: #c54035;
   --blue: #315fcb;
+  --font-manrope: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-dm-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
 * {

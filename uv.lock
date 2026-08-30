@@ -345,10 +345,21 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.optional-dependencies]
+embeddings = [
+    { name = "sentence-transformers" },
+]
+ml = [
     { name = "presidio-analyzer" },
     { name = "presidio-anonymizer" },
     { name = "sentence-transformers" },
-    { name = "uvicorn", extra = ["standard"] },
+]
+pii = [
+    { name = "presidio-analyzer" },
+    { name = "presidio-anonymizer" },
 ]
 
 [package.dev-dependencies]
@@ -361,11 +372,15 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.116,<1" },
-    { name = "presidio-analyzer", specifier = ">=2.2" },
-    { name = "presidio-anonymizer", specifier = ">=2.2" },
-    { name = "sentence-transformers", specifier = ">=3.0" },
+    { name = "presidio-analyzer", marker = "extra == 'ml'", specifier = ">=2.2" },
+    { name = "presidio-analyzer", marker = "extra == 'pii'", specifier = ">=2.2" },
+    { name = "presidio-anonymizer", marker = "extra == 'ml'", specifier = ">=2.2" },
+    { name = "presidio-anonymizer", marker = "extra == 'pii'", specifier = ">=2.2" },
+    { name = "sentence-transformers", marker = "extra == 'embeddings'", specifier = ">=3.0" },
+    { name = "sentence-transformers", marker = "extra == 'ml'", specifier = ">=3.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.35,<1" },
 ]
+provides-extras = ["pii", "embeddings", "ml"]
 
 [package.metadata.requires-dev]
 dev = [

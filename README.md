@@ -27,6 +27,21 @@ uv sync --group dev
 uv run uvicorn app.main:app --reload
 ```
 
+The default installation is offline-safe and uses the deterministic regex and
+Jaccard fallbacks. Optional local detectors can be installed separately:
+
+```bash
+# Presidio PII engine (requires a compatible spaCy language model)
+uv sync --group dev --extra pii
+
+# Sentence-transformer grounding; pre-cache all-MiniLM-L6-v2 first
+uv sync --group dev --extra embeddings
+CONTROLPLANE_ENABLE_LOCAL_EMBEDDINGS=1 uv run uvicorn app.main:app --reload
+```
+
+Runtime model downloads are disabled. Set `CONTROLPLANE_ALLOW_MODEL_DOWNLOAD=1`
+only during an explicit setup step, never for the judged offline demo.
+
 API docs: <http://127.0.0.1:8000/docs>
 
 ### Next.js dashboard (recommended demo UI)
@@ -114,7 +129,7 @@ ControlPlane_Final_Proposal_Plan.md
 
 ## Important limitations
 
-- Lexical similarity retrieves evidence; it does not prove entailment.
+- Embedding or lexical similarity retrieves evidence; neither proves entailment.
 - Generation agreement measures stability; it does not establish factual truth.
 - Regex PII and prompt-injection checks are bounded demonstrations and can miss paraphrases or create false positives.
 - The policy overlays demonstrate configuration mechanics and are not legal advice or production compliance mappings.
@@ -122,4 +137,3 @@ ControlPlane_Final_Proposal_Plan.md
 - Audit data is local SQLite with synthetic inputs. Production deployment requires access control, encryption, minimization, retention enforcement, and tamper-resistant export.
 
 See [ControlPlane_Final_Proposal_Plan.md](ControlPlane_Final_Proposal_Plan.md) for the full business, governance, metrics, and roadmap plan.
-
