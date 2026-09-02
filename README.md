@@ -397,5 +397,5 @@ ControlPlane_Final_Proposal_Plan.md
 ## Maintainers
 
 - Ketan Agarwal - [Ketan-Agarwal](https://github.com/Ketan-Agarwal)
-- Ritika Batra - `ritgit24`
-- Yatin Bhojwani
+- Ritika Batra - [Ritika Batra](https://github.com/ritgit24)
+- Yatin Bhojwani - [Yatin Bhojwani](https://github.com/yatin-bhojwani)
